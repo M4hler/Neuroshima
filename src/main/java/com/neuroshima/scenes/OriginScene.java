@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class OriginScene
 {
-    private HeroOrigin origin;
+    private HeroOrigin heroOrigin;
     private ArrayList<Origin> origins;
     private ArrayList<TitledPane> titledPanes;
     private ArrayList<ArrayList<Button>> buttons;
@@ -57,7 +57,7 @@ public class OriginScene
         mainGrid.add(qualityLabel, 0, 2);
         mainGrid.add(chosenQualityLabel, 1, 2);
 
-        origin = new HeroOrigin(null, "");
+        heroOrigin = new HeroOrigin(null, "");
         origins = new ArrayList<>();
         origins.add(new SouthHegemony());
         origins.add(new Vegas());
@@ -149,8 +149,8 @@ public class OriginScene
 
     private void nextScene(ActionEvent event)
     {
-        if(origin.origin != null &&
-                (origin.origin.qualities.contains(origin.quality) || gamblesAmountLabel.getText().equals("150")))
+        if(heroOrigin.origin != null &&
+                (heroOrigin.origin.qualities.contains(heroOrigin.quality) || gamblesAmountLabel.getText().equals("150")))
         {
             mainGrid.requestFocus();
             mainController.nextScene();
@@ -171,10 +171,10 @@ public class OriginScene
             int buttonIndex = buttons.get(i).indexOf(b);
             if(buttonIndex >= 0)
             {
-                origin.origin = origins.get(i);
-                origin.quality = origins.get(i).qualities.get(buttonIndex);
-                chosenOriginLabel.setText(origin.origin.name + " (+1 " + origin.origin.getBonusStat() + ")");
-                chosenQualityLabel.setText(origin.quality);
+                heroOrigin.origin = origins.get(i);
+                heroOrigin.quality = origins.get(i).qualities.get(buttonIndex);
+                chosenOriginLabel.setText(heroOrigin.origin.name + " (+1 " + heroOrigin.origin.getBonusStat() + ")");
+                chosenQualityLabel.setText(heroOrigin.quality);
                 break;
             }
         }
@@ -188,18 +188,18 @@ public class OriginScene
 
         if(!tp.isExpanded())
         {
-            origin.origin = origins.get(titledPanes.indexOf(tp));
-            chosenOriginLabel.setText(origin.origin.name + " (+1 " + origin.origin.getBonusStat() + ")");
+            heroOrigin.origin = origins.get(titledPanes.indexOf(tp));
+            chosenOriginLabel.setText(heroOrigin.origin.name + " (+1 " + heroOrigin.origin.getBonusStat() + ")");
 
-            for(int i = 0; i < origin.origin.qualities.size(); i++)
+            for(int i = 0; i < heroOrigin.origin.qualities.size(); i++)
             {
-                if(origin.quality.equals(origin.origin.qualities.get(i)))
+                if(heroOrigin.quality.equals(heroOrigin.origin.qualities.get(i)))
                 {
                     return;
                 }
             }
 
-            origin.quality = "";
+            heroOrigin.quality = "";
             chosenQualityLabel.setText("");
         }
     }
@@ -207,7 +207,7 @@ public class OriginScene
     private void giveUpQuality(ActionEvent event)
     {
         gamblesAmountLabel.setText("150");
-        origin.quality = "";
+        heroOrigin.quality = "";
         chosenQualityLabel.setText("No quality from origin");
         mainGrid.requestFocus();
     }
