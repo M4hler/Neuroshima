@@ -63,6 +63,28 @@ public class JobScene
         jobs.add(new Ganger());
         jobs.add(new Gladiator());
         jobs.add(new Trader());
+        jobs.add(new NewEraPreacher());
+        jobs.add(new Cowboy());
+        jobs.add(new Courier());
+        jobs.add(new Hunter());
+        jobs.add(new MutantHunter());
+        jobs.add(new Mafioso());
+        jobs.add(new Medic());
+        jobs.add(new Fixer());
+        jobs.add(new Mercenary());
+        jobs.add(new SecurityGuard());
+        jobs.add(new Judge());
+        jobs.add(new Spec());
+        jobs.add(new Shaman());
+        jobs.add(new Rat());
+        jobs.add(new BeastsTrainer());
+        jobs.add(new Trailer());
+        jobs.add(new HighwayWarrior());
+        jobs.add(new ClanWarrior());
+        jobs.add(new Killer());
+        jobs.add(new MachineKiller());
+        jobs.add(new Thief());
+        jobs.add(new Soldier());
 
         titledPanes = new ArrayList<>();
         buttons = new ArrayList<>();
