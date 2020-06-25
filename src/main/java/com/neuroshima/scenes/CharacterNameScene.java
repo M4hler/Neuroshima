@@ -1,6 +1,7 @@
 package com.neuroshima.scenes;
 
-import com.neuroshima.MainController;
+import com.neuroshima.controllers.MainController;
+import com.neuroshima.model.Hero;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +18,7 @@ import javafx.scene.text.Text;
 
 public class CharacterNameScene
 {
+    private Hero hero;
     private TextField nameInput;
     private TextField surnameInput;
     private TextField nicknameInput;
@@ -25,9 +27,10 @@ public class CharacterNameScene
     private Scene scene;
     private MainController mainController;
 
-    public CharacterNameScene(MainController mainController)
+    public CharacterNameScene(MainController mainController, Hero hero)
     {
         this.mainController = mainController;
+        this.hero = hero;
 
         grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -84,6 +87,11 @@ public class CharacterNameScene
         else
         {
             errorText.setText("");
+
+            hero.name = nameInput.getText();
+            hero.surname = surnameInput.getText();
+            hero.nickname = nicknameInput.getText();
+
             grid.requestFocus();
             mainController.nextScene();
         }

@@ -1,7 +1,8 @@
 package com.neuroshima.scenes;
 
-import com.neuroshima.MainController;
+import com.neuroshima.controllers.MainController;
 import com.neuroshima.jobs.*;
+import com.neuroshima.model.Hero;
 import com.neuroshima.model.HeroJob;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -30,7 +31,7 @@ public class JobScene
     private MainController mainController;
     private Scene scene;
 
-    public JobScene(MainController mainController)
+    public JobScene(MainController mainController, Hero hero)
     {
         this.mainController = mainController;
 
@@ -116,6 +117,13 @@ public class JobScene
             scrollPaneGrid.add(label, 1, i);
         }
 
+        Button noFeatureButton = new Button("No feature (+50 gambles)");
+        noFeatureButton.setOnAction(this::giveUpFeature);
+        HBox noFeatureBox = new HBox();
+        noFeatureBox.setAlignment(Pos.CENTER);
+        noFeatureBox.getChildren().add(noFeatureButton);
+        scrollPaneGrid.add(noFeatureBox, 0, jobs.size() + 1);
+
         scrollPane.setContent(scrollPaneGrid);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setOnMouseClicked(this::focusMainGrid);
@@ -127,7 +135,14 @@ public class JobScene
         prevButtonBox.getChildren().add(prevButton);
         mainGrid.add(prevButtonBox, 0, 4);
 
+        Button nextButton = new Button("Next");
+        HBox nextButtonBox = new HBox(10);
+        nextButtonBox.setAlignment(Pos.BOTTOM_RIGHT);
+        nextButtonBox.getChildren().add(nextButton);
+        mainGrid.add(nextButtonBox, 1, 4);
+
         prevButton.setOnAction(this::previousScene);
+        nextButton.setOnAction(this::nextScene);
 
         scene = new Scene(mainGrid, 800, 600);
         mainGrid.requestFocus();
@@ -142,6 +157,11 @@ public class JobScene
     {
         mainGrid.requestFocus();
         mainController.previousScene();
+    }
+
+    private void nextScene(ActionEvent event)
+    {
+        //TODO
     }
 
     private void setJob(MouseEvent event)
@@ -168,11 +188,16 @@ public class JobScene
 
     private void setJobAndFeature(ActionEvent event)
     {
-        System.out.println("TODO");
+        //TODO
     }
 
     private void focusMainGrid(MouseEvent event)
     {
         mainGrid.requestFocus();
+    }
+
+    private void giveUpFeature(ActionEvent event)
+    {
+        //TODO
     }
 }

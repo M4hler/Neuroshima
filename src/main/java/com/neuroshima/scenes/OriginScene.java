@@ -1,7 +1,7 @@
 package com.neuroshima.scenes;
 
-import com.neuroshima.MainController;
-import com.neuroshima.model.HeroOrigin;
+import com.neuroshima.controllers.MainController;
+import com.neuroshima.model.Hero;
 import com.neuroshima.origins.*;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -14,25 +14,29 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
 public class OriginScene
 {
-    private HeroOrigin heroOrigin;
+    private Hero hero;
     private ArrayList<Origin> origins;
     private ArrayList<TitledPane> titledPanes;
     private ArrayList<ArrayList<Button>> buttons;
     private Label chosenOriginLabel;
     private Label chosenQualityLabel;
     private Label gamblesAmountLabel;
+    private Text errorText;
     private GridPane mainGrid;
     private Scene scene;
     private MainController mainController;
 
-    public OriginScene(MainController mainController)
+    public OriginScene(MainController mainController, Hero hero)
     {
         this.mainController = mainController;
+        this.hero = hero;
 
         mainGrid = new GridPane();
         mainGrid.setAlignment(Pos.TOP_CENTER);
@@ -44,7 +48,7 @@ public class OriginScene
         GridPane scrollPaneGrid = new GridPane();
 
         Label gamblesLabel = new Label("Gambles");
-        gamblesAmountLabel = new Label("100");
+        gamblesAmountLabel = new Label(String.valueOf(hero.gambles));
         Label originLabel = new Label("Origin");
         chosenOriginLabel = new Label("");
         Label qualityLabel = new Label("Quality");
@@ -57,7 +61,6 @@ public class OriginScene
         mainGrid.add(qualityLabel, 0, 2);
         mainGrid.add(chosenQualityLabel, 1, 2);
 
-        heroOrigin = new HeroOrigin(null, "");
         origins = new ArrayList<>();
         origins.add(new SouthHegemony());
         origins.add(new Vegas());
@@ -132,6 +135,9 @@ public class OriginScene
         prevButton.setOnAction(this::previousScene);
         nextButton.setOnAction(this::nextScene);
 
+        errorText = new Text();
+        mainGrid.add(errorText, 1, 5);
+
         scene = new Scene(mainGrid, 800, 600);
         mainGrid.requestFocus();
     }
@@ -149,11 +155,16 @@ public class OriginScene
 
     private void nextScene(ActionEvent event)
     {
-        if(heroOrigin.origin != null &&
-                (heroOrigin.origin.qualities.contains(heroOrigin.quality) || gamblesAmountLabel.getText().equals("150")))
+        if(hero.heroOriginProperlySetUp())
         {
+            errorText.setText("");
             mainGrid.requestFocus();
             mainController.nextScene();
+        }
+        else
+        {
+            errorText.setFill(Color.FIREBRICK);
+            errorText.setText("Quality wasn't chosen properly");
         }
     }
 
@@ -171,15 +182,14 @@ public class OriginScene
             int buttonIndex = buttons.get(i).indexOf(b);
             if(buttonIndex >= 0)
             {
-                heroOrigin.origin = origins.get(i);
-                heroOrigin.quality = origins.get(i).qualities.get(buttonIndex);
-                chosenOriginLabel.setText(heroOrigin.origin.name + " (+1 " + heroOrigin.origin.getBonusStat() + ")");
-                chosenQualityLabel.setText(heroOrigin.quality);
+                hero.manageHeroOrigin(origins.get(i), origins.get(i).qualities.get(buttonIndex));
+                chosenOriginLabel.setText(hero.heroOrigin.origin.name + " (+1 " + hero.heroOrigin.origin.getBonusStat() + ")");
+                chosenQualityLabel.setText(hero.heroOrigin.quality);
                 break;
             }
         }
 
-        gamblesAmountLabel.setText("100");
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
     }
 
     private void setOrigin(MouseEvent event)
@@ -188,27 +198,25 @@ public class OriginScene
 
         if(!tp.isExpanded())
         {
-            heroOrigin.origin = origins.get(titledPanes.indexOf(tp));
-            chosenOriginLabel.setText(heroOrigin.origin.name + " (+1 " + heroOrigin.origin.getBonusStat() + ")");
-
-            for(int i = 0; i < heroOrigin.origin.qualities.size(); i++)
-            {
-                if(heroOrigin.quality.equals(heroOrigin.origin.qualities.get(i)))
-                {
-                    return;
-                }
-            }
-
-            heroOrigin.quality = "";
-            chosenQualityLabel.setText("");
+            hero.manageHeroOrigin(origins.get(titledPanes.indexOf(tp)));
+            chosenOriginLabel.setText(hero.heroOrigin.origin.name + " (+1 " + hero.heroOrigin.origin.getBonusStat() + ")");
+            chosenQualityLabel.setText(hero.heroOrigin.quality);
         }
+
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
     }
 
     private void giveUpQuality(ActionEvent event)
     {
-        gamblesAmountLabel.setText("150");
-        heroOrigin.quality = "";
+        hero.giveUpQuality();
+
+        if(hero.heroOrigin != null && hero.heroOrigin.origin != null)
+        {
+            chosenOriginLabel.setText(hero.heroOrigin.origin.name + " (+1 " + hero.heroOrigin.origin.getBonusStat() + ")");
+        }
+
         chosenQualityLabel.setText("No quality from origin");
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
         mainGrid.requestFocus();
     }
 }

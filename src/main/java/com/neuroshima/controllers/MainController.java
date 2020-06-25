@@ -1,5 +1,6 @@
-package com.neuroshima;
+package com.neuroshima.controllers;
 
+import com.neuroshima.model.Hero;
 import com.neuroshima.scenes.CharacterNameScene;
 import com.neuroshima.scenes.JobScene;
 import com.neuroshima.scenes.OriginScene;
@@ -21,10 +22,12 @@ public class MainController extends Application
         stage = primaryStage;
         stage.setTitle("Neuroshima");
 
+        Hero hero = new Hero();
+
         scenes = new ArrayList<>();
-        scenes.add(new CharacterNameScene(this).getScene());
-        scenes.add(new OriginScene(this).getScene());
-        scenes.add(new JobScene(this).getScene());
+        scenes.add(new CharacterNameScene(this, hero).getScene());
+        scenes.add(new OriginScene(this, hero).getScene());
+        scenes.add(new JobScene(this, hero).getScene());
 
         currentScene = scenes.get(0);
 

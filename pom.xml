@@ -29,7 +29,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
                 <configuration>
-                    <mainClass>com.neuroshima.MainController</mainClass>
+                    <mainClass>com.neuroshima.controllers.MainController</mainClass>
                 </configuration>
             </plugin>
         </plugins>
