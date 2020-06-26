@@ -1,5 +1,6 @@
 package com.neuroshima.model;
 
+import com.neuroshima.jobs.Job;
 import com.neuroshima.origins.Origin;
 
 public class Hero
@@ -23,14 +24,9 @@ public class Hero
 
     public boolean heroOriginProperlySetUp()
     {
-        if(heroOrigin != null
+        return heroOrigin != null
                 && heroOrigin.origin != null
-                && (heroOrigin.qualityGivenUp || heroOrigin.quality != null))
-        {
-                return true;
-        }
-
-        return false;
+                && (heroOrigin.qualityGivenUp || heroOrigin.quality != null);
     }
 
     public void manageHeroOrigin(Origin origin)
@@ -84,6 +80,61 @@ public class Hero
         else if(!heroOrigin.qualityGivenUp)
         {
             heroOrigin = new HeroOrigin(heroOrigin.origin, null, true);
+            gambles += 50;
+        }
+    }
+
+    public void manageHeroJob(Job job)
+    {
+        if(heroJob == null)
+        {
+            heroJob = new HeroJob(job, null, false);
+        }
+        else if(heroJob.featureGivenUp)
+        {
+            if(job.features.contains(heroJob.feature))
+            {
+                heroJob = new HeroJob(job, heroJob.feature, false);
+            }
+            else
+            {
+                heroJob = new HeroJob(job, null, false);
+            }
+            gambles -= 50;
+        }
+        else
+        {
+            if(job.features.contains(heroJob.feature))
+            {
+                heroJob = new HeroJob(job, heroJob.feature, false);
+            }
+            else
+            {
+                heroJob = new HeroJob(job, null, false);
+            }
+        }
+    }
+
+    public void manageHeroJob(Job job, String feature)
+    {
+        if(heroJob.featureGivenUp)
+        {
+            gambles -= 50;
+        }
+
+        heroJob = new HeroJob(job, feature, false);
+    }
+
+    public void giveUpFeature()
+    {
+        if(heroJob == null)
+        {
+            heroJob = new HeroJob(null, null, true);
+            gambles += 50;
+        }
+        else if(!heroJob.featureGivenUp)
+        {
+            heroJob = new HeroJob(heroJob.job, null, true);
             gambles += 50;
         }
     }

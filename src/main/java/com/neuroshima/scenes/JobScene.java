@@ -3,7 +3,6 @@ package com.neuroshima.scenes;
 import com.neuroshima.controllers.MainController;
 import com.neuroshima.jobs.*;
 import com.neuroshima.model.Hero;
-import com.neuroshima.model.HeroJob;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 
 public class JobScene
 {
-    private HeroJob heroJob;
+    private Hero hero;
     private ArrayList<Job> jobs;
     private ArrayList<TitledPane> titledPanes;
     private ArrayList<ArrayList<Button>> buttons;
@@ -34,6 +33,7 @@ public class JobScene
     public JobScene(MainController mainController, Hero hero)
     {
         this.mainController = mainController;
+        this.hero = hero;
 
         mainGrid = new GridPane();
         mainGrid.setAlignment(Pos.TOP_CENTER);
@@ -45,7 +45,7 @@ public class JobScene
         GridPane scrollPaneGrid = new GridPane();
 
         Label gamblesLabel = new Label("Gambles");
-        gamblesAmountLabel = new Label("TODO take value from model");
+        gamblesAmountLabel = new Label(String.valueOf(hero.gambles));
         Label originLabel = new Label("Origin");
         chosenJobLabel = new Label("");
         Label qualityLabel = new Label("Quality");
@@ -58,7 +58,6 @@ public class JobScene
         mainGrid.add(qualityLabel, 0, 2);
         mainGrid.add(chosenFeatureLabel, 1, 2);
 
-        heroJob = new HeroJob(null, "");
         jobs = new ArrayList<>();
         jobs.add(new Chemist());
         jobs.add(new Ganger());
@@ -170,25 +169,31 @@ public class JobScene
 
         if(!tp.isExpanded())
         {
-            heroJob.job = jobs.get(titledPanes.indexOf(tp));
-            chosenJobLabel.setText(heroJob.job.name);
-
-            for(int i = 0; i < heroJob.job.features.size(); i++)
-            {
-                if(heroJob.feature.equals(heroJob.job.features.get(i)))
-                {
-                    return;
-                }
-            }
-
-            heroJob.feature = "";
-            chosenFeatureLabel.setText("");
+            hero.manageHeroJob(jobs.get(titledPanes.indexOf(tp)));
+            chosenJobLabel.setText(hero.heroJob.job.name);
+            chosenFeatureLabel.setText(hero.heroJob.feature);
         }
+
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
     }
 
     private void setJobAndFeature(ActionEvent event)
     {
-        //TODO
+        Button b = (Button)event.getSource();
+
+        for(int i = 0; i < buttons.size(); i++)
+        {
+            int buttonIndex = buttons.get(i).indexOf(b);
+            if(buttonIndex >= 0)
+            {
+                hero.manageHeroJob(jobs.get(i), jobs.get(i).features.get(buttonIndex));
+                chosenJobLabel.setText(hero.heroJob.job.name);
+                chosenFeatureLabel.setText(hero.heroJob.feature);
+                break;
+            }
+        }
+
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
     }
 
     private void focusMainGrid(MouseEvent event)
@@ -198,6 +203,15 @@ public class JobScene
 
     private void giveUpFeature(ActionEvent event)
     {
-        //TODO
+        hero.giveUpFeature();
+
+        if(hero.heroJob != null && hero.heroJob.job != null)
+        {
+            chosenJobLabel.setText(hero.heroJob.job.name);
+        }
+
+        chosenFeatureLabel.setText("No feature from job");
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
+        mainGrid.requestFocus();
     }
 }
