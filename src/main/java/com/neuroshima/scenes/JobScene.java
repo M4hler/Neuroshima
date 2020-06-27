@@ -14,6 +14,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ public class JobScene implements SceneEssentials
     private Label chosenJobLabel;
     private Label chosenFeatureLabel;
     private Label gamblesAmountLabel;
+    private Text errorText;
     private GridPane mainGrid;
     private MainController mainController;
     private Scene scene;
@@ -143,6 +146,9 @@ public class JobScene implements SceneEssentials
         prevButton.setOnAction(this::previousScene);
         nextButton.setOnAction(this::nextScene);
 
+        errorText = new Text();
+        mainGrid.add(errorText, 1, 5);
+
         scene = new Scene(mainGrid, 800, 600);
         mainGrid.requestFocus();
     }
@@ -167,7 +173,17 @@ public class JobScene implements SceneEssentials
 
     private void nextScene(ActionEvent event)
     {
-        //TODO
+        if(hero.heroJobProperlySetUp())
+        {
+            errorText.setText("");
+            mainGrid.requestFocus();
+            mainController.nextScene();
+        }
+        else
+        {
+            errorText.setFill(Color.FIREBRICK);
+            errorText.setText("Feature wasn't chosen properly");
+        }
     }
 
     private void setJob(MouseEvent event)

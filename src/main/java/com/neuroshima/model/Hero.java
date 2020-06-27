@@ -84,6 +84,13 @@ public class Hero
         }
     }
 
+    public boolean heroJobProperlySetUp()
+    {
+        return heroJob != null
+                && heroJob.job != null
+                && (heroJob.featureGivenUp || heroJob.feature != null);
+    }
+
     public void manageHeroJob(Job job)
     {
         if(heroJob == null)

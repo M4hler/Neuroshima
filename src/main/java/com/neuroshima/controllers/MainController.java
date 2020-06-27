@@ -1,10 +1,7 @@
 package com.neuroshima.controllers;
 
 import com.neuroshima.model.Hero;
-import com.neuroshima.scenes.CharacterNameScene;
-import com.neuroshima.scenes.JobScene;
-import com.neuroshima.scenes.OriginScene;
-import com.neuroshima.scenes.SceneEssentials;
+import com.neuroshima.scenes.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -28,6 +25,7 @@ public class MainController extends Application
         scenes.add(new CharacterNameScene(this, hero));
         scenes.add(new OriginScene(this, hero));
         scenes.add(new JobScene(this, hero));
+        scenes.add(new StatisticsScene(this, hero));
 
         currentScene = scenes.get(0);
 
