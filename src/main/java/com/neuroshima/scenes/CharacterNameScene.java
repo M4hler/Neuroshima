@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class CharacterNameScene
+public class CharacterNameScene implements SceneEssentials
 {
     private Hero hero;
     private TextField nameInput;
@@ -72,9 +72,15 @@ public class CharacterNameScene
         grid.requestFocus();
     }
 
+    @Override
     public Scene getScene()
     {
         return scene;
+    }
+
+    @Override
+    public void refreshScene()
+    {
     }
 
     private void nextScene(ActionEvent event)

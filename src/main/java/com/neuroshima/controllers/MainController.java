@@ -4,16 +4,16 @@ import com.neuroshima.model.Hero;
 import com.neuroshima.scenes.CharacterNameScene;
 import com.neuroshima.scenes.JobScene;
 import com.neuroshima.scenes.OriginScene;
+import com.neuroshima.scenes.SceneEssentials;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
 public class MainController extends Application
 {
-    private ArrayList<Scene> scenes;
-    private Scene currentScene;
+    private ArrayList<SceneEssentials> scenes;
+    private SceneEssentials currentScene;
     private Stage stage;
 
     @Override
@@ -25,13 +25,13 @@ public class MainController extends Application
         Hero hero = new Hero();
 
         scenes = new ArrayList<>();
-        scenes.add(new CharacterNameScene(this, hero).getScene());
-        scenes.add(new OriginScene(this, hero).getScene());
-        scenes.add(new JobScene(this, hero).getScene());
+        scenes.add(new CharacterNameScene(this, hero));
+        scenes.add(new OriginScene(this, hero));
+        scenes.add(new JobScene(this, hero));
 
         currentScene = scenes.get(0);
 
-        stage.setScene(currentScene);
+        stage.setScene(currentScene.getScene());
 
         stage.show();
     }
@@ -44,12 +44,14 @@ public class MainController extends Application
     public void nextScene()
     {
         currentScene = scenes.get(scenes.indexOf(currentScene) + 1);
-        stage.setScene(currentScene);
+        currentScene.refreshScene();
+        stage.setScene(currentScene.getScene());
     }
 
     public void previousScene()
     {
         currentScene = scenes.get(scenes.indexOf(currentScene) - 1);
-        stage.setScene(currentScene);
+        currentScene.refreshScene();
+        stage.setScene(currentScene.getScene());
     }
 }

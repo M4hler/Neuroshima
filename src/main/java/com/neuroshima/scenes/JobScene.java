@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
-public class JobScene
+public class JobScene implements SceneEssentials
 {
     private Hero hero;
     private ArrayList<Job> jobs;
@@ -147,9 +147,16 @@ public class JobScene
         mainGrid.requestFocus();
     }
 
+    @Override
     public Scene getScene()
     {
         return scene;
+    }
+
+    @Override
+    public void refreshScene()
+    {
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
     }
 
     private void previousScene(ActionEvent event)

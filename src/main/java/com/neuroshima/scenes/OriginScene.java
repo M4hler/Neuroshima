@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-public class OriginScene
+public class OriginScene implements SceneEssentials
 {
     private Hero hero;
     private ArrayList<Origin> origins;
@@ -142,9 +142,16 @@ public class OriginScene
         mainGrid.requestFocus();
     }
 
+    @Override
     public Scene getScene()
     {
         return scene;
+    }
+
+    @Override
+    public void refreshScene()
+    {
+        gamblesAmountLabel.setText(String.valueOf(hero.gambles));
     }
 
     private void previousScene(ActionEvent event)
