@@ -77,9 +77,9 @@ public class StatisticsScene implements SceneEssentials
         standardRulesGrid.add(rollButton, 0, 0);
 
         Label dragLabel = new Label("Drag");
-        standardRulesGrid.add(dragLabel, 1, 0);
+        standardRulesGrid.add(dragLabel, 2, 0);
         Label dropLabel = new Label("Drop here");
-        standardRulesGrid.add(dropLabel,2, 0);
+        standardRulesGrid.add(dropLabel,4, 0);
 
         Border border = new Border(
                         new BorderStroke(Color.BLACK,
@@ -94,25 +94,23 @@ public class StatisticsScene implements SceneEssentials
             standardRulesDiceRolls.get(i).setOnDragDetected(this::dragDetected);
             standardRulesDiceRolls.get(i).setOnDragOver(this::dragOver);
             standardRulesDiceRolls.get(i).setOnDragDropped(this::dragDropped);
-            standardRulesDiceRolls.get(i).setOnDragDone(this::dragDone);
 
             standardRulesRollsAssignment.add(new Label("  "));
             standardRulesRollsAssignment.get(i).setBorder(border);
             standardRulesRollsAssignment.get(i).setOnDragDetected(this::dragDetected);
             standardRulesRollsAssignment.get(i).setOnDragOver(this::dragOver);
             standardRulesRollsAssignment.get(i).setOnDragDropped(this::dragDropped);
-            standardRulesRollsAssignment.get(i).setOnDragDone(this::dragDone);
 
-            standardRulesGrid.add(standardRulesDiceRolls.get(i), 1, i + 1);
-            standardRulesGrid.add(standardRulesRollsAssignment.get(i), 2, i + 1);
+            standardRulesGrid.add(standardRulesDiceRolls.get(i), 2, i + 1);
+            standardRulesGrid.add(standardRulesRollsAssignment.get(i), 4, i + 1);
         }
 
         standardRulesTotalSumLabel = new Label("");
         Label standardRulesTotalLabel = new Label("Total");
         standardRulesGrid.add(standardRulesTotalLabel, 0, standardRulesDiceRolls.size() + 1);
-        standardRulesGrid.add(standardRulesTotalSumLabel, 1, standardRulesLabels.size() + 1);
+        standardRulesGrid.add(standardRulesTotalSumLabel, 2, standardRulesLabels.size() + 1);
 
-        mainGrid.add(standardRulesGrid, 0, 2);
+        mainGrid.add(standardRulesGrid, 0, 2, 2, 1);
 
         Button prevButton = new Button("Prev");
         HBox prevButtonBox = new HBox(10);
@@ -175,6 +173,7 @@ public class StatisticsScene implements SceneEssentials
         int sum = 0;
         for(int i = 0; i < standardRulesDiceRolls.size(); i++)
         {
+            standardRulesRollsAssignment.get(i).setText("  ");
             standardRulesDiceRolls.get(i).setText(String.valueOf(rolls.get(i)));
             sum += rolls.get(i);
         }
@@ -203,14 +202,6 @@ public class StatisticsScene implements SceneEssentials
         event.consume();
     }
 
-    private void dragDone(DragEvent event)
-    {
-        if(event.getTransferMode() == TransferMode.MOVE)
-        {
-            ((Label)event.getSource()).setText("  ");
-        }
-    }
-
     private void dragOver(DragEvent event)
     {
         if(event.getGestureSource() != event.getTarget()
@@ -224,17 +215,18 @@ public class StatisticsScene implements SceneEssentials
     private void dragDropped(DragEvent event)
     {
         Dragboard dragboard = event.getDragboard();
-        boolean success = false;
 
         if(dragboard.hasString())
         {
-            success = true;
+            Label sourceLabel = (Label)event.getGestureTarget();
+            Label targetLabel = (Label)event.getGestureSource();
 
-            Label label = (Label)event.getGestureTarget();
-            label.setText(dragboard.getString());
+            String swapText = sourceLabel.getText();
+            sourceLabel.setText(dragboard.getString());
+            targetLabel.setText(swapText);
+
         }
 
-        event.setDropCompleted(success);
         event.consume();
     }
 }
