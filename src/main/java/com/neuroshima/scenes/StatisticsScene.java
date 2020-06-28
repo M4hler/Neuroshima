@@ -22,7 +22,10 @@ public class StatisticsScene implements SceneEssentials
     private Hero hero;
     private ArrayList<Label> standardRulesRollsAssignment;
     private ArrayList<Label> standardRulesDiceRolls;
+    private ArrayList<Label> standardRulesBonus;
+    private ArrayList<Label> standardRulesFinal;
     private Label standardRulesTotalSumLabel;
+    private Label standardRulesFinalSum;
     private Random generator;
     private Label gamblesAmountLabel;
     private GridPane mainGrid;
@@ -63,6 +66,10 @@ public class StatisticsScene implements SceneEssentials
         standardRulesGrid.setVgap(10);
 
         generator = new Random();
+        standardRulesBonus = new ArrayList<>();
+        standardRulesFinal = new ArrayList<>();
+        ArrayList<Button> standardRulesPlus = new ArrayList<>();
+        ArrayList<Button> standardRulesMinus = new ArrayList<>();
         standardRulesDiceRolls = new ArrayList<>();
         standardRulesRollsAssignment = new ArrayList<>();
         ArrayList<Label> standardRulesLabels = new ArrayList<>();
@@ -80,6 +87,10 @@ public class StatisticsScene implements SceneEssentials
         standardRulesGrid.add(dragLabel, 2, 0);
         Label dropLabel = new Label("Drop here");
         standardRulesGrid.add(dropLabel,4, 0);
+        Label bonusLabel = new Label("Bonus");
+        standardRulesGrid.add(bonusLabel, 6, 0);
+        Label finalLabel = new Label("Final");
+        standardRulesGrid.add(finalLabel, 8, 0);
 
         Border border = new Border(
                         new BorderStroke(Color.BLACK,
@@ -101,14 +112,28 @@ public class StatisticsScene implements SceneEssentials
             standardRulesRollsAssignment.get(i).setOnDragOver(this::dragOver);
             standardRulesRollsAssignment.get(i).setOnDragDropped(this::dragDropped);
 
+            standardRulesBonus.add(new Label(""));
+            standardRulesFinal.add(new Label(""));
+
+            standardRulesPlus.add(new Button("+"));
+            standardRulesMinus.add(new Button("-"));
+            standardRulesPlus.get(i).setOnAction(this::addStat);
+            standardRulesMinus.get(i).setOnAction(this::subtractStat);
+
             standardRulesGrid.add(standardRulesDiceRolls.get(i), 2, i + 1);
             standardRulesGrid.add(standardRulesRollsAssignment.get(i), 4, i + 1);
+            standardRulesGrid.add(standardRulesBonus.get(i), 6 , i + 1);
+            standardRulesGrid.add(standardRulesMinus.get(i), 7, i + 1);
+            standardRulesGrid.add(standardRulesFinal.get(i), 8, i + 1);
+            standardRulesGrid.add(standardRulesPlus.get(i), 9, i + 1);
         }
 
         standardRulesTotalSumLabel = new Label("");
         Label standardRulesTotalLabel = new Label("Total");
+        standardRulesFinalSum = new Label("");
         standardRulesGrid.add(standardRulesTotalLabel, 0, standardRulesDiceRolls.size() + 1);
         standardRulesGrid.add(standardRulesTotalSumLabel, 2, standardRulesLabels.size() + 1);
+        standardRulesGrid.add(standardRulesFinalSum, 8, standardRulesLabels.size() + 1);
 
         mainGrid.add(standardRulesGrid, 0, 2, 2, 1);
 
@@ -134,6 +159,38 @@ public class StatisticsScene implements SceneEssentials
     public void refreshScene()
     {
         gamblesAmountLabel.setText(String.valueOf(hero.gambles));
+        setBonusLabels();
+        finalStats();
+    }
+
+    private void setBonusLabels()
+    {
+        standardRulesBonus.get(0).setText(String.valueOf(hero.heroOrigin.origin.statBonus.build));
+        standardRulesBonus.get(1).setText(String.valueOf(hero.heroOrigin.origin.statBonus.dexterity));
+        standardRulesBonus.get(2).setText(String.valueOf(hero.heroOrigin.origin.statBonus.character));
+        standardRulesBonus.get(3).setText(String.valueOf(hero.heroOrigin.origin.statBonus.perception));
+        standardRulesBonus.get(4).setText(String.valueOf(hero.heroOrigin.origin.statBonus.cleverness));
+    }
+
+    private void finalStats()
+    {
+        int sum = 0;
+        for(int i = 0; i < standardRulesFinal.size(); i++)
+        {
+            int rollAssignment = 0;
+            String assignment = standardRulesRollsAssignment.get(i).getText();
+            if(!assignment.equals("  "))
+            {
+                rollAssignment = Integer.parseInt(assignment);
+            }
+
+            int bonus = Integer.parseInt(standardRulesBonus.get(i).getText());
+            int finalValue = Math.min(rollAssignment + bonus, 20);
+            standardRulesFinal.get(i).setText(String.valueOf(finalValue));
+            sum += finalValue;
+        }
+
+        standardRulesFinalSum.setText(String.valueOf(sum));
     }
 
     private void standardRulesView(ActionEvent event)
@@ -174,6 +231,7 @@ public class StatisticsScene implements SceneEssentials
         for(int i = 0; i < standardRulesDiceRolls.size(); i++)
         {
             standardRulesRollsAssignment.get(i).setText("  ");
+            standardRulesFinal.get(i).setText("");
             standardRulesDiceRolls.get(i).setText(String.valueOf(rolls.get(i)));
             sum += rolls.get(i);
         }
@@ -227,6 +285,17 @@ public class StatisticsScene implements SceneEssentials
 
         }
 
+        finalStats();
         event.consume();
+    }
+
+    private void addStat(ActionEvent event)
+    {
+        //TODO
+    }
+
+    private void subtractStat(ActionEvent event)
+    {
+        //TODO
     }
 }
