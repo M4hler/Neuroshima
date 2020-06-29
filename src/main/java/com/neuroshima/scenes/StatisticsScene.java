@@ -20,14 +20,18 @@ import java.util.Random;
 public class StatisticsScene implements SceneEssentials
 {
     private Hero hero;
+    private int gambleBalance;
     private ArrayList<Label> standardRulesRollsAssignment;
     private ArrayList<Label> standardRulesDiceRolls;
     private ArrayList<Label> standardRulesBonus;
     private ArrayList<Label> standardRulesFinal;
+    private ArrayList<Button> standardRulesPlus;
+    private ArrayList<Button> standardRulesMinus;
     private Label standardRulesTotalSumLabel;
     private Label standardRulesFinalSum;
     private Random generator;
     private Label gamblesAmountLabel;
+    private Label gambleBalanceLabel;
     private GridPane mainGrid;
     private MainController mainController;
     private Scene scene;
@@ -36,6 +40,7 @@ public class StatisticsScene implements SceneEssentials
     {
         this.mainController = mainController;
         this.hero = hero;
+        gambleBalance = 0;
 
         mainGrid = new GridPane();
         mainGrid.setAlignment(Pos.TOP_CENTER);
@@ -45,9 +50,11 @@ public class StatisticsScene implements SceneEssentials
 
         Label gamblesLabel = new Label("Gambles");
         gamblesAmountLabel = new Label(String.valueOf(hero.gambles));
+        gambleBalanceLabel = new Label("(" + gambleBalance + " balance)");
 
         mainGrid.add(gamblesLabel, 0, 0);
         mainGrid.add(gamblesAmountLabel, 1, 0);
+        mainGrid.add(gambleBalanceLabel, 2, 0);
 
         ToggleGroup toggleGroup = new ToggleGroup();
         ToggleButton standardRulesButton = new ToggleButton("Standard rules");
@@ -59,7 +66,7 @@ public class StatisticsScene implements SceneEssentials
         alternativeRulesButton.setOnAction(this::alternativeRulesView);
 
         HBox toggleButtonsHBox = new HBox(standardRulesButton, alternativeRulesButton);
-        mainGrid.add(toggleButtonsHBox, 0, 1, 2, 1);
+        mainGrid.add(toggleButtonsHBox, 0, 1, 3, 1);
 
         GridPane standardRulesGrid = new GridPane();
         standardRulesGrid.setHgap(10);
@@ -68,8 +75,8 @@ public class StatisticsScene implements SceneEssentials
         generator = new Random();
         standardRulesBonus = new ArrayList<>();
         standardRulesFinal = new ArrayList<>();
-        ArrayList<Button> standardRulesPlus = new ArrayList<>();
-        ArrayList<Button> standardRulesMinus = new ArrayList<>();
+        standardRulesPlus = new ArrayList<>();
+        standardRulesMinus = new ArrayList<>();
         standardRulesDiceRolls = new ArrayList<>();
         standardRulesRollsAssignment = new ArrayList<>();
         ArrayList<Label> standardRulesLabels = new ArrayList<>();
@@ -135,7 +142,7 @@ public class StatisticsScene implements SceneEssentials
         standardRulesGrid.add(standardRulesTotalSumLabel, 2, standardRulesLabels.size() + 1);
         standardRulesGrid.add(standardRulesFinalSum, 8, standardRulesLabels.size() + 1);
 
-        mainGrid.add(standardRulesGrid, 0, 2, 2, 1);
+        mainGrid.add(standardRulesGrid, 0, 2, 4, 1);
 
         Button prevButton = new Button("Prev");
         HBox prevButtonBox = new HBox(10);
@@ -237,6 +244,9 @@ public class StatisticsScene implements SceneEssentials
         }
 
         standardRulesTotalSumLabel.setText(String.valueOf(sum));
+        standardRulesFinalSum.setText("");
+        gambleBalance = 0;
+        gambleBalanceLabel.setText("(" + gambleBalance + " balance)");
         mainGrid.requestFocus();
     }
 
@@ -291,11 +301,41 @@ public class StatisticsScene implements SceneEssentials
 
     private void addStat(ActionEvent event)
     {
-        //TODO
+        Button b = (Button)event.getSource();
+        int index = standardRulesPlus.indexOf(b);
+
+        if(!standardRulesFinal.get(index).getText().equals(""))
+        {
+            int stat = Integer.parseInt(standardRulesFinal.get(index).getText());
+            if(stat < 15 && Math.abs(gambleBalance - 50) <= hero.gambles)
+            {
+                standardRulesFinal.get(index).setText(String.valueOf(stat + 1));
+                int finalSum = Integer.parseInt(standardRulesFinalSum.getText());
+                standardRulesFinalSum.setText(String.valueOf(finalSum + 1));
+                gambleBalance -= 50;
+                gambleBalanceLabel.setText("(" + gambleBalance + " balance)");
+            }
+        }
+
+        mainGrid.requestFocus();
     }
 
     private void subtractStat(ActionEvent event)
     {
-        //TODO
+        Button b = (Button)event.getSource();
+        int index = standardRulesMinus.indexOf(b);
+
+        if(!standardRulesFinal.get(index).getText().equals(""))
+        {
+            int stat = Integer.parseInt(standardRulesFinal.get(index).getText());
+            if(stat > 6)
+            {
+                standardRulesFinal.get(index).setText(String.valueOf(stat - 1));
+                int finalSum = Integer.parseInt(standardRulesFinalSum.getText());
+                standardRulesFinalSum.setText(String.valueOf(finalSum - 1));
+                gambleBalance += 20;
+                gambleBalanceLabel.setText("(" + gambleBalance + " balance)");
+            }
+        }
     }
 }
